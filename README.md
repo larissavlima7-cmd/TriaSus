@@ -8,7 +8,7 @@ Mal gestão e investimento: desperdício de recursos, a distribuição ineficien
 Desse modo, desenvolvemos um Sistema de Gerenciamento de Consultas e Redução de Filas para a Rede Municipal de Americana, para minimizar os impactos na rede de saúde da nossa comunidade. 
 
 ### 2. Introdução: 
-O documento especifica o planejamento e arquitetura para o desenvolvimento de uma plataforma web e mobile de triagem antecipada e organização de solicitações de atendimento do SUS, visando otimizar o fluxo de encaminhamentos, reduzir inconsistências nos registros e contribuir para a diminuição do tempo de espera por consultas e procedimentos especializados nas UPAs e UBSs. Para isso usaremos o Flutter para a interface gráfica em Mobile (que será focado ________) , _________ para o desenvolvimento web (para o controle ______ )e ________ para o back-end.
+O documento especifica o planejamento e arquitetura para o desenvolvimento de uma plataforma web e mobile de triagem antecipada e organização de solicitações de atendimento do SUS, visando otimizar o fluxo de encaminhamentos, reduzir inconsistências nos registros e contribuir para a diminuição do tempo de espera por consultas e procedimentos especializados nas UPAs e UBSs. Para isso usaremos o Flutter para a interface gráfica em Mobile, _________ para o desenvolvimento web e ________ para o back-end.
 
 ### 3. Relação com o projeto:
 Os programas federais demonstram a importância de ampliar o acesso aos atendimentos especializados no SUS, porém a redução de filas também depende da organização das informações e da eficiência dos processos iniciais de atendimento.
