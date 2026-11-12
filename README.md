@@ -8,7 +8,11 @@ Mal gestão e investimento: desperdício de recursos, a distribuição ineficien
 Desse modo, desenvolvemos um Sistema de Gerenciamento de Consultas e Redução de Filas para a Rede Municipal de Americana, para minimizar os impactos na rede de saúde da nossa comunidade. 
 
 ### 2. Introdução: 
+<<<<<<< HEAD
 O documento especifica o planejamento e arquitetura para o desenvolvimento de uma plataforma web e mobile de triagem antecipada e organização de solicitações de atendimento do SUS, visando otimizar o fluxo de encaminhamentos, reduzir inconsistências nos registros e contribuir para a diminuição do tempo de espera por consultas e procedimentos especializados nas UPAs e UBSs. Para isso usaremos o Flutter para a interface gráfica em Mobile, _________ para o desenvolvimento web e ________ para o back-end.
+=======
+O documento especifica o planejamento e arquitetura para o desenvolvimento de uma plataforma web e mobile de triagem antecipada e organização de solicitações de atendimento do SUS, visando otimizar o fluxo de encaminhamentos, reduzir inconsistências nos registros e contribuir para a diminuição do tempo de espera por consultas e procedimentos especializados nas UPAs e UBSs. Para isso usaremos o Flutter para a interface gráfica mobile, Angular para o desenvolvimento web, Java com Spring Boot para o back-end e PostgreSQL para o banco de dados relacional.
+>>>>>>> origin/master
 
 ### 3. Relação com o projeto:
 Os programas federais demonstram a importância de ampliar o acesso aos atendimentos especializados no SUS, porém a redução de filas também depende da organização das informações e da eficiência dos processos iniciais de atendimento.
@@ -43,6 +47,7 @@ Os programas federais demonstram a importância de ampliar o acesso aos atendime
 
 ```mermaid
    
+<<<<<<< HEAD
 erDiagram 
     paciente {
         int id_paciente PK
@@ -82,6 +87,196 @@ erDiagram
     paciente ||--o{ solicitacao : "faz (1:N)"
     especialidade ||--o{ solicitacao : "recebe (1:N)"
     profissional ||--o{ solicitacao : "avalia (1:N)"
+=======
+
+erDiagram
+
+    USUARIO {
+        int id PK
+        string nome
+        string email
+        string cpf
+        string senha_hash
+        boolean ativo
+    }
+
+    PAPEL {
+        int id PK
+        string nome
+        string descricao
+    }
+
+    USUARIO_PAPEL {
+        int usuario_id PK, FK
+        int papel_id PK, FK
+    }
+
+    PACIENTE {
+        int id PK
+        int usuario_id FK
+        string cartao_sus
+        date data_nascimento
+        string telefone
+        string endereco
+    }
+
+    PROFISSIONAL {
+        int id PK
+        int usuario_id FK
+        string registro_profissional
+        string conselho
+        string cargo
+    }
+
+    PROFISSIONAL_UNIDADE {
+        int profissional_id PK, FK
+        int unidade_id PK, FK
+    }
+
+    ESPECIALIDADE {
+        int id PK
+        string nome
+        string descricao
+    }
+
+    UNIDADE_SAUDE {
+        int id PK
+        string nome
+        string cnes
+        string tipo
+        string endereco
+        string telefone
+    }
+
+    SOLICITACAO {
+        int id PK
+        int paciente_id FK
+        int especialidade_id FK
+        int criado_por FK
+        string protocolo
+        string motivo
+        string descricao
+        string status
+        string prioridade_sugerida
+        string prioridade_aprovada
+        datetime criada_em
+        datetime atualizada_em
+    }
+
+    TRIAGEM {
+        int id PK
+        int solicitacao_id FK
+        int profissional_id FK
+        string prioridade_sugerida
+        string prioridade_aprovada
+        string observacao
+        datetime realizada_em
+    }
+
+    PERGUNTA_TRIAGEM {
+        int id PK
+        string pergunta
+        string tipo_resposta
+        boolean obrigatoria
+    }
+
+    RESPOSTA_TRIAGEM {
+        int id PK
+        int triagem_id FK
+        int pergunta_id FK
+        string resposta
+    }
+
+    DOCUMENTO {
+        int id PK
+        int solicitacao_id FK
+        string nome_arquivo
+        string tipo_arquivo
+        string caminho_arquivo
+        datetime enviado_em
+    }
+
+    HISTORICO_STATUS {
+        int id PK
+        int solicitacao_id FK
+        int usuario_id FK
+        string status_anterior
+        string status_novo
+        datetime data_alteracao
+    }
+
+    FILA_ATENDIMENTO {
+        int id PK
+        int solicitacao_id FK
+        int unidade_id FK
+        int especialidade_id FK
+        int prioridade
+        int posicao
+        string status
+        datetime entrada_em
+    }
+
+    AGENDAMENTO {
+        int id PK
+        int fila_id FK
+        int profissional_id FK
+        datetime data_hora
+        string status
+        string observacao
+    }
+
+    NOTIFICACAO {
+        int id PK
+        int usuario_id FK
+        string titulo
+        string mensagem
+        boolean lida
+        datetime enviada_em
+    }
+
+    AUDITORIA {
+        int id PK
+        int usuario_id FK
+        string acao
+        string entidade
+        int entidade_id
+        datetime data_hora
+    }
+
+    USUARIO ||--o{ USUARIO_PAPEL : possui
+    PAPEL ||--o{ USUARIO_PAPEL : atribuido
+
+    USUARIO ||--o| PACIENTE : possui
+    USUARIO ||--o| PROFISSIONAL : possui
+
+    PROFISSIONAL ||--o{ PROFISSIONAL_UNIDADE : vinculado
+    UNIDADE_SAUDE ||--o{ PROFISSIONAL_UNIDADE : recebe
+
+    PACIENTE ||--o{ SOLICITACAO : realiza
+    ESPECIALIDADE ||--o{ SOLICITACAO : classifica
+    USUARIO ||--o{ SOLICITACAO : cria
+
+    SOLICITACAO ||--o{ TRIAGEM : recebe
+    PROFISSIONAL ||--o{ TRIAGEM : realiza
+
+    TRIAGEM ||--o{ RESPOSTA_TRIAGEM : possui
+    PERGUNTA_TRIAGEM ||--o{ RESPOSTA_TRIAGEM : responde
+
+    SOLICITACAO ||--o{ DOCUMENTO : possui
+    SOLICITACAO ||--o{ HISTORICO_STATUS : registra
+    USUARIO ||--o{ HISTORICO_STATUS : altera
+
+    SOLICITACAO ||--o{ FILA_ATENDIMENTO : encaminhada
+    UNIDADE_SAUDE ||--o{ FILA_ATENDIMENTO : organiza
+    ESPECIALIDADE ||--o{ FILA_ATENDIMENTO : atende
+
+    FILA_ATENDIMENTO ||--o{ AGENDAMENTO : gera
+    PROFISSIONAL ||--o{ AGENDAMENTO : atende
+
+    USUARIO ||--o{ NOTIFICACAO : recebe
+    USUARIO ||--o{ AUDITORIA : registra
+
+>>>>>>> origin/master
     
 ```
 
