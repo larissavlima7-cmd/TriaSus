@@ -39,9 +39,55 @@ Os programas federais demonstram a importância de ampliar o acesso aos atendime
 - RNF06 - Acessibilidade (WCAG 2.1 AA): Garantir acessibilidade com leitores de tela, alto contraste e navegação por voz para idosos ou pessoas com deficiência visual.
 - RNF07 - Disponibilidade: O sistema deve manter um SLA mínimo de 99,9% de disponibilidade operacional.
 
-### 5. Casos de Teste
+### 5. Diagrama de Entidade Relacional
 
-#### 5.1 Casos de Teste Funcionais
+```mermaid
+   
+erDiagram 
+    paciente {
+        int id_paciente PK
+        varchar nome
+        varchar cpf
+        varchar cns
+        date data_nascimento
+        varchar telefone
+    }
+
+    profissional {
+        int id_profissional PK
+        varchar nome
+        varchar cpf
+        varchar funcao
+        varchar numero_registro
+        varchar unidade
+    }
+
+    especialidade{
+        int id_especialidade PK
+        varchar nome
+    }
+
+    solicitacao {
+        int id_solicitacao PK
+        int id_paciente FK
+        int id_especialidade FK
+        int id_profissional FK
+        date data_solicitacao
+        time hora_solicitacao
+        varchar status
+        varchar prioridade
+        text observacao
+    }
+
+    paciente ||--o{ solicitacao : "faz (1:N)"
+    especialidade ||--o{ solicitacao : "recebe (1:N)"
+    profissional ||--o{ solicitacao : "avalia (1:N)"
+    
+```
+
+### 6. Casos de Teste
+
+#### 6.1 Casos de Teste Funcionais
 | ID | Requisitos | Cenário | Descrição | Resultado Esperado |
 | --- | --- | --- | --- | --- |
 | CT-01 | RF01, RF02, RF03 e RF06 | Jornada do Paciente: Submissão Completa de Triagem | Paciente autentica via Gov.br/CPF, inicia triagem de especialidade, responde perguntas dinâmicas e tenta enviar sem anexar exame. Após alerta do sistema, anexa a mídia/PDF necessária e conclui o envio. | Login realizado, regras de validação impedem envio incompleto e solicitação é criada com documentos anexados. |
@@ -49,7 +95,7 @@ Os programas federais demonstram a importância de ampliar o acesso aos atendime
 | CT-03 | RF09, RF10 e RF11 | Atenção Primária (APS) e Devolução Assistida | preenche pré-triagem para paciente sem acesso digital. Em seguida, o enfermeiro/médico da UBS acessa o painel, identifica uma inconsistência e devolve a solicitação marcando o campo pendente, gerando alerta ao responsável. | Triagem assistida cadastrada com sucesso e fluxo de devolução orientada com notificação de pendência validado. |
 | CT-04 | RF12 e RF13 | Gestão da Fila e Interoperabilidade Legada | Médico Regulador visualiza a fila municipal reordenada dinamicamente por gravidade e tempo de espera (não por ordem de chegada), homologa os casos graves e aciona a sincronização automática com SISREG/e-SUS. | Fila exibida por critério clínico de risco e payload de dados gerado/sincronizado com os sistemas legados. |
 
-#### 5.2 Casos de Teste Não Funcionais 
+#### 6.2 Casos de Teste Não Funcionais 
 | ID | Requisitos | Escopo | Descrição | Critério | 
 | --- | --- | --- | --- | --- | 
 | CT-05 | RNF01, RNF02 e RNF03 | Segurança, Permissões e Padrões de Saúde | Validar se dados trafegam criptografados (TLS 1.3/AES-256), tentar acessar prontuários com perfil sem CRM/COREN (RBAC) e validar se as APIs REST seguem a estrutura HL7/FHIR para a RNDS. | Dados protegidos, acessos não autorizados bloqueados (403 Forbidden) e payloads em conformidade com o padrão FHIR. | 
