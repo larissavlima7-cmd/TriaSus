@@ -8,11 +8,7 @@ Mal gestão e investimento: desperdício de recursos, a distribuição ineficien
 Desse modo, desenvolvemos um Sistema de Gerenciamento de Consultas e Redução de Filas para a Rede Municipal de Americana, para minimizar os impactos na rede de saúde da nossa comunidade. 
 
 ### 2. Introdução: 
-<<<<<<< HEAD
-O documento especifica o planejamento e arquitetura para o desenvolvimento de uma plataforma web e mobile de triagem antecipada e organização de solicitações de atendimento do SUS, visando otimizar o fluxo de encaminhamentos, reduzir inconsistências nos registros e contribuir para a diminuição do tempo de espera por consultas e procedimentos especializados nas UPAs e UBSs. Para isso usaremos o Flutter para a interface gráfica em Mobile, _________ para o desenvolvimento web e ________ para o back-end.
-=======
 O documento especifica o planejamento e arquitetura para o desenvolvimento de uma plataforma web e mobile de triagem antecipada e organização de solicitações de atendimento do SUS, visando otimizar o fluxo de encaminhamentos, reduzir inconsistências nos registros e contribuir para a diminuição do tempo de espera por consultas e procedimentos especializados nas UPAs e UBSs. Para isso usaremos o Flutter para a interface gráfica mobile, Angular para o desenvolvimento web, Java com Spring Boot para o back-end e PostgreSQL para o banco de dados relacional.
->>>>>>> origin/master
 
 ### 3. Relação com o projeto:
 Os programas federais demonstram a importância de ampliar o acesso aos atendimentos especializados no SUS, porém a redução de filas também depende da organização das informações e da eficiência dos processos iniciais de atendimento.
@@ -47,47 +43,6 @@ Os programas federais demonstram a importância de ampliar o acesso aos atendime
 
 ```mermaid
    
-<<<<<<< HEAD
-erDiagram 
-    paciente {
-        int id_paciente PK
-        varchar nome
-        varchar cpf
-        varchar cns
-        date data_nascimento
-        varchar telefone
-    }
-
-    profissional {
-        int id_profissional PK
-        varchar nome
-        varchar cpf
-        varchar funcao
-        varchar numero_registro
-        varchar unidade
-    }
-
-    especialidade{
-        int id_especialidade PK
-        varchar nome
-    }
-
-    solicitacao {
-        int id_solicitacao PK
-        int id_paciente FK
-        int id_especialidade FK
-        int id_profissional FK
-        date data_solicitacao
-        time hora_solicitacao
-        varchar status
-        varchar prioridade
-        text observacao
-    }
-
-    paciente ||--o{ solicitacao : "faz (1:N)"
-    especialidade ||--o{ solicitacao : "recebe (1:N)"
-    profissional ||--o{ solicitacao : "avalia (1:N)"
-=======
 
 erDiagram
 
@@ -276,7 +231,6 @@ erDiagram
     USUARIO ||--o{ NOTIFICACAO : recebe
     USUARIO ||--o{ AUDITORIA : registra
 
->>>>>>> origin/master
     
 ```
 
