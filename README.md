@@ -48,7 +48,7 @@ O projeto atua diretamente nos percentuais não concluídos do planejamento muni
 
 - RNF04 - Padronização de Arquivos e Desempenho: Realizar compressão automática de imagens capturadas pela câmera do celular (suportando JPG, PNG e PDF até 5 MB) para garantir carregamento rápido mesmo em redes móveis 3G/4G nas UBSs.
 
-- RNF05 - Stack Tecnológica e Arquitetura: Desenvolver o back-end em Java (Spring Boot) com API REST, persistência em PostgreSQL, painel administrativo web em Angular e aplicativo mobile em Flutter.
+- RNF05 - Stack Tecnológica e Arquitetura MVC: Estruturar a aplicação sob a arquitetura MVC (Model-View-Controller), isolando o domínio e a persistência (Model com entidades JPA/Hibernate e PostgreSQL), o controle de requisições e regras de fluxo (Controller via API REST em Java com Spring Boot) e a camada de visualização (View com painel administrativo web em Angular e aplicativo mobile em Flutter).
 
 ### 5. Diagrama de Entidade Relacional
 
