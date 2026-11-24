@@ -54,16 +54,16 @@ O projeto atua diretamente nos percentuais não concluídos do planejamento muni
 
 ```mermaid
    
-
 erDiagram
 
-    USUARIO {
+   USUARIO {
         int id PK
         string nome
         string email
         string cpf
         string senha_hash
         boolean ativo
+        timestamp criado_em
     }
 
     PAPEL {
@@ -77,22 +77,36 @@ erDiagram
         int papel_id PK, FK
     }
 
+    UNIDADE_UBS {
+        int id PK
+        string nome
+        string cnes
+        string endereco
+        boolean ativo
+    }
+
+    ESPECIALIDADE {
+        int id PK
+        string nome
+        text descricao
+        boolean ativo
+    }
+
     PACIENTE {
         int id PK
         int usuario_id FK
+        int unidade_referencia_id FK
         string cartao_sus
         date data_nascimento
         varchar telefone
         boolean contato_validado
     }
 
-    profissional {
-        int id_profissional PK
-        varchar nome
-        varchar cpf
+    PROFISSIONAL {
+        int id PK
+        int usuario_id FK
         varchar funcao
         varchar numero_registro
-        varchar unidade_ubs
     }
 
     PROFISSIONAL_UNIDADE {
@@ -100,55 +114,85 @@ erDiagram
         int unidade_id PK, FK
     }
 
-    checklist_protocolo {
-        int id_item_checklist PK
-        int id_especialidade FK
+    CHECKLIST_PROTOCOLO {
+        int id PK
+        int especialidade_id FK
         varchar nome_documento
+        varchar descricao_orientacao
         boolean obrigatorio
     }
 
-    solicitacao {
-        int id_solicitacao PK
-        int id_paciente FK
-        int id_especialidade FK
-        int id_profissional FK
-        date data_solicitacao
-        time hora_solicitacao
+    SOLICITACAO {
+        int id PK
+        varchar protocolo
+        int paciente_id FK
+        int especialidade_id FK
+        int unidade_id FK
+        int profissional_conferencia_id FK
+        timestamp data_solicitacao
         varchar status
         varchar prioridade_oficial
         text queixa_relatada
-        text observacao
+        varchar tempo_evolucao
+        text observacao_profissional
     }
- 
-    documento_anexo {
-            int id_documento PK
-            int id_solicitacao FK
-            int id_item_checklist FK
-            varchar url_arquivo
-            varchar status_validacao
-            text motivo_rejeicao
-        }
 
-    sinal_vital {
-        int id_sinal PK
-        int id_solicitacao FK
+    DOCUMENTO_ANEXO {
+        int id PK
+        int solicitacao_id FK
+        int item_checklist_id FK
+        varchar nome_arquivo_original
+        varchar url_arquivo
+        varchar tipo_mime
+        bigint tamanho_bytes
+        varchar status_validacao
+        text motivo_rejeicao
+        timestamp enviado_em
+    }
+
+    SINAL_VITAL {
+        int id PK
+        int solicitacao_id FK
+        int profissional_id FK
         varchar pressao_arterial
+        int frequencia_cardiaca
         decimal temperatura
         int glicemia
         int saturacao
         varchar origem_afericao
+        timestamp aferido_em
     }
 
+    LOG_AUDITORIA {
+        bigint id PK
+        int usuario_id FK
+        varchar acao
+        varchar entidade_afetada
+        int registro_id
+        text detalhes
+        varchar ip_origem
+        timestamp data_hora
+    }
 
    
 
-    paciente ||--o{ solicitacao : "faz (1:N)"
-    especialidade ||--o{ solicitacao : "recebe (1:N)"
-    especialidade ||--o{ checklist_protocolo : "exige (1:N)"
-    profissional ||--o{ solicitacao : "confere (1:N)"
-    solicitacao ||--o{ documento_anexo : "possui (1:N)"
-    checklist_protocolo ||--o{ documento_anexo : "valida (1:N)"
-    solicitacao ||--o{ sinal_vital : "registra (1:N)"
+    USUARIO ||--o{ USUARIO_PAPEL : "possui (1:N)"
+    PAPEL ||--o{ USUARIO_PAPEL : "atribuido (1:N)"
+    USUARIO ||--o| PACIENTE : "eh (1:1)"
+    USUARIO ||--o| PROFISSIONAL : "eh (1:1)"
+    USUARIO ||--o{ LOG_AUDITORIA : "gera (1:N)"
+    UNIDADE_UBS ||--o{ PACIENTE : "referencia (1:N)"
+    UNIDADE_UBS ||--o{ PROFISSIONAL_UNIDADE : "aloca (1:N)"
+    PROFISSIONAL ||--o{ PROFISSIONAL_UNIDADE : "atua (1:N)"
+    UNIDADE_UBS ||--o{ SOLICITACAO : "recebe (1:N)"
+    PACIENTE ||--o{ SOLICITACAO : "faz (1:N)"
+    ESPECIALIDADE ||--o{ SOLICITACAO : "destina (1:N)"
+    ESPECIALIDADE ||--o{ CHECKLIST_PROTOCOLO : "exige (1:N)"
+    PROFISSIONAL ||--o{ SOLICITACAO : "confere (1:N)"
+    SOLICITACAO ||--o{ DOCUMENTO_ANEXO : "possui (1:N)"
+    CHECKLIST_PROTOCOLO ||--o{ DOCUMENTO_ANEXO : "valida (1:N)"
+    SOLICITACAO ||--o{ SINAL_VITAL : "registra (1:N)"
+    PROFISSIONAL ||--o{ SINAL_VITAL : "afere (1:N)"
     
 ```
 
