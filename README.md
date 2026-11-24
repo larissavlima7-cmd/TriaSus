@@ -54,12 +54,33 @@ O projeto atua diretamente nos percentuais não concluídos do planejamento muni
 
 ```mermaid
    
-erDiagram 
-    paciente {
-        int id_paciente PK
-        varchar nome
-        varchar cpf
-        varchar cns
+
+erDiagram
+
+    USUARIO {
+        int id PK
+        string nome
+        string email
+        string cpf
+        string senha_hash
+        boolean ativo
+    }
+
+    PAPEL {
+        int id PK
+        string nome
+        string descricao
+    }
+
+    USUARIO_PAPEL {
+        int usuario_id PK, FK
+        int papel_id PK, FK
+    }
+
+    PACIENTE {
+        int id PK
+        int usuario_id FK
+        string cartao_sus
         date data_nascimento
         varchar telefone
         boolean contato_validado
@@ -74,9 +95,9 @@ erDiagram
         varchar unidade_ubs
     }
 
-    especialidade{
-        int id_especialidade PK
-        varchar nome
+    PROFISSIONAL_UNIDADE {
+        int profissional_id PK, FK
+        int unidade_id PK, FK
     }
 
     checklist_protocolo {
