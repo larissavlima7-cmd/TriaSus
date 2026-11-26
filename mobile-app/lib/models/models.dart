@@ -135,13 +135,13 @@ class SinaisVitaisDomiciliares {
 }
 
 class DocumentoAnexoModel {
-
   final int id;
   final int itemChecklistId;
   final String nomeArquivoOriginal;
   final String? urlArquivo;
   final String? statusValidacao; // PENDENTE, VALIDO, REJEITADO
   final String? motivoRejeicao;
+  final int? tamanhoBytes;
 
   const DocumentoAnexoModel({
     required this.id,
@@ -150,6 +150,7 @@ class DocumentoAnexoModel {
     this.urlArquivo,
     this.statusValidacao,
     this.motivoRejeicao,
+    this.tamanhoBytes,
   });
 
   factory DocumentoAnexoModel.fromJson(Map<String, dynamic> json) {
@@ -160,6 +161,7 @@ class DocumentoAnexoModel {
       urlArquivo: json['urlArquivo'],
       statusValidacao: json['statusValidacao'] ?? 'PENDENTE',
       motivoRejeicao: json['motivoRejeicao'],
+      tamanhoBytes: json['tamanhoBytes'],
     );
   }
 }

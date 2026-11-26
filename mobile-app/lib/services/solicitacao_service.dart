@@ -14,6 +14,11 @@ abstract class ISolicitacaoService {
     required int solicitacaoId,
     required int itemChecklistId,
     required String filePath,
+    void Function(int sent, int total)? onProgress,
+  });
+  Future<void> removerDocumento({
+    required int solicitacaoId,
+    required int documentoId,
   });
   Future<void> submeterSolicitacao(int solicitacaoId);
 }
