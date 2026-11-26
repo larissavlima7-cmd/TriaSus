@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../core/http_client.dart';
 import '../models/models.dart';
@@ -69,15 +70,20 @@ class RealSolicitacaoService implements ISolicitacaoService {
     required int solicitacaoId,
     required int itemChecklistId,
     required String filePath,
+    void Function(int sent, int total)? onProgress,
   }) async {
     try {
+      final file = File(filePath);
+      final nome = file.path.split(RegExp(r'[/\\]')).last;
       final formData = FormData.fromMap({
         'itemChecklistId': itemChecklistId,
-        'arquivo': await MultipartFile.fromFile(filePath),
+        'arquivo': await MultipartFile.fromFile(filePath, filename: nome),
       });
+
       final response = await _dio.post(
-        '/solicitacoes/$solicitacaoId/anexos',
+        '/solicitacoes/$solicitacaoId/documentos',
         data: formData,
+        onSendProgress: onProgress,
       );
       return DocumentoAnexoModel.fromJson(response.data);
     } catch (e) {
@@ -86,9 +92,21 @@ class RealSolicitacaoService implements ISolicitacaoService {
   }
 
   @override
+  Future<void> removerDocumento({
+    required int solicitacaoId,
+    required int documentoId,
+  }) async {
+    try {
+      await _dio.delete('/solicitacoes/$solicitacaoId/documentos/$documentoId');
+    } catch (e) {
+      throw AppHttpClient.parseErrorMessage(e);
+    }
+  }
+
+  @override
   Future<void> submeterSolicitacao(int solicitacaoId) async {
     try {
-      await _dio.post('/solicitacoes/$solicitacaoId/submeter');
+      await _dio.post('/solicitacoes/$solicitacaoId/enviar');
     } catch (e) {
       throw AppHttpClient.parseErrorMessage(e);
     }
@@ -203,14 +221,90 @@ class MockSolicitacaoService implements ISolicitacaoService {
     required int solicitacaoId,
     required int itemChecklistId,
     required String filePath,
+    void Function(int sent, int total)? onProgress,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return DocumentoAnexoModel(
+    if (onProgress != null) {
+      onProgress(300000, 1000000);
+      await Future.delayed(const Duration(milliseconds: 200));
+      onProgress(700000, 1000000);
+      await Future.delayed(const Duration(milliseconds: 200));
+      onProgress(1000000, 1000000);
+    } else {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    final file = File(filePath);
+    int tamanho = 1468006;
+    if (file.existsSync()) {
+      tamanho = file.lengthSync();
+    }
+
+    final doc = DocumentoAnexoModel(
       id: DateTime.now().millisecondsSinceEpoch,
       itemChecklistId: itemChecklistId,
       nomeArquivoOriginal: filePath.split(RegExp(r'[/\\]')).last,
       statusValidacao: 'PENDENTE',
+      tamanhoBytes: tamanho,
     );
+
+    // Atualiza solicitação na lista mock
+    final index = _mockList.indexWhere((s) => s.id == solicitacaoId);
+    if (index != -1) {
+      final s = _mockList[index];
+      final novosDocs = List<DocumentoAnexoModel>.from(s.documentos)
+        ..removeWhere((d) => d.itemChecklistId == itemChecklistId)
+        ..add(doc);
+
+      _mockList[index] = SolicitacaoModel(
+        id: s.id,
+        protocolo: s.protocolo,
+        pacienteId: s.pacienteId,
+        especialidadeId: s.especialidadeId,
+        especialidadeNome: s.especialidadeNome,
+        unidadeId: s.unidadeId,
+        unidadeNome: s.unidadeNome,
+        dataSolicitacao: s.dataSolicitacao,
+        status: s.status,
+        prioridadeOficial: s.prioridadeOficial,
+        queixaRelatada: s.queixaRelatada,
+        tempoEvolucao: s.tempoEvolucao,
+        observacaoProfissional: s.observacaoProfissional,
+        documentos: novosDocs,
+      );
+    }
+
+    return doc;
+  }
+
+  @override
+  Future<void> removerDocumento({
+    required int solicitacaoId,
+    required int documentoId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    final index = _mockList.indexWhere((s) => s.id == solicitacaoId);
+    if (index != -1) {
+      final s = _mockList[index];
+      final novosDocs = List<DocumentoAnexoModel>.from(s.documentos)
+        ..removeWhere((d) => d.id == documentoId);
+
+      _mockList[index] = SolicitacaoModel(
+        id: s.id,
+        protocolo: s.protocolo,
+        pacienteId: s.pacienteId,
+        especialidadeId: s.especialidadeId,
+        especialidadeNome: s.especialidadeNome,
+        unidadeId: s.unidadeId,
+        unidadeNome: s.unidadeNome,
+        dataSolicitacao: s.dataSolicitacao,
+        status: s.status,
+        prioridadeOficial: s.prioridadeOficial,
+        queixaRelatada: s.queixaRelatada,
+        tempoEvolucao: s.tempoEvolucao,
+        observacaoProfissional: s.observacaoProfissional,
+        documentos: novosDocs,
+      );
+    }
   }
 
   @override
