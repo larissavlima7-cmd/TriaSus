@@ -33,16 +33,32 @@ class RealSolicitacaoService implements ISolicitacaoService {
     required int especialidadeId,
     required String queixaRelatada,
     required String tempoEvolucao,
-    required String telefoneContato,
+    String? telefoneContato,
+    SinaisVitaisDomiciliares? sinaisDomiciliares,
   }) async {
     try {
-      final response = await _dio.post('/solicitacoes', data: {
-        'especialidadeId': especialidadeId,
-        'queixaRelatada': queixaRelatada,
-        'tempoEvolucao': tempoEvolucao,
-        'telefoneContato': telefoneContato,
-      });
-      return SolicitacaoModel.fromJson(response.data);
+      final response = await _dio.post(
+        '/solicitacoes',
+        data: {
+          'especialidadeId': especialidadeId,
+          'queixaRelatada': queixaRelatada,
+          'tempoEvolucao': tempoEvolucao,
+        },
+      );
+      final solicitacao = SolicitacaoModel.fromJson(response.data);
+
+      if (sinaisDomiciliares != null && sinaisDomiciliares.temAlgumaMedicao) {
+        try {
+          await _dio.post(
+            '/solicitacoes/${solicitacao.id}/sinais-vitais',
+            data: sinaisDomiciliares.toJson(),
+          );
+        } catch (_) {
+          // Permite continuar para documentos mesmo que o sinal vital opcional falhe
+        }
+      }
+
+      return solicitacao;
     } catch (e) {
       throw AppHttpClient.parseErrorMessage(e);
     }
@@ -92,7 +108,8 @@ class MockSolicitacaoService implements ISolicitacaoService {
       dataSolicitacao: '2026-11-20T10:30:00',
       status: 'EM_CONFERENCIA_UBS',
       prioridadeOficial: 'NAO_DEFINIDA',
-      queixaRelatada: 'Dor intensa no joelho direito há 3 meses com dificuldade de locomoção.',
+      queixaRelatada:
+          'Dor intensa no joelho direito há 3 meses com dificuldade de locomoção.',
       tempoEvolucao: '3 meses',
       documentos: [
         DocumentoAnexoModel(
@@ -122,7 +139,8 @@ class MockSolicitacaoService implements ISolicitacaoService {
       prioridadeOficial: 'MEDIA',
       queixaRelatada: 'Queimação e dor epigástrica contínua.',
       tempoEvolucao: '6 meses',
-      observacaoProfissional: 'A foto do encaminhamento está ilegível. Favor reenviar com boa iluminação.',
+      observacaoProfissional:
+          'A foto do encaminhamento está ilegível. Favor reenviar com boa iluminação.',
       documentos: [
         DocumentoAnexoModel(
           id: 3,
@@ -155,7 +173,8 @@ class MockSolicitacaoService implements ISolicitacaoService {
     required int especialidadeId,
     required String queixaRelatada,
     required String tempoEvolucao,
-    required String telefoneContato,
+    String? telefoneContato,
+    SinaisVitaisDomiciliares? sinaisDomiciliares,
   }) async {
     await Future.delayed(const Duration(milliseconds: 500));
     final nova = SolicitacaoModel(
@@ -163,7 +182,9 @@ class MockSolicitacaoService implements ISolicitacaoService {
       protocolo: 'TRI-2026-000${_mockList.length + 85}',
       pacienteId: 1,
       especialidadeId: especialidadeId,
-      especialidadeNome: especialidadeId == 1 ? 'Ortopedia' : 'Gastroenterologia',
+      especialidadeNome: especialidadeId == 1
+          ? 'Ortopedia'
+          : 'Gastroenterologia',
       unidadeId: 1,
       unidadeNome: 'UBS Centro',
       dataSolicitacao: DateTime.now().toIso8601String(),

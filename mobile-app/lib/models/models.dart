@@ -95,7 +95,47 @@ class ChecklistItemModel {
   }
 }
 
+class SinaisVitaisDomiciliares {
+  final String? pressaoArterial;
+  final double? temperatura;
+  final int? glicemia;
+  final int? saturacao;
+
+  const SinaisVitaisDomiciliares({
+    this.pressaoArterial,
+    this.temperatura,
+    this.glicemia,
+    this.saturacao,
+  });
+
+  bool get temAlgumaMedicao =>
+      (pressaoArterial != null && pressaoArterial!.isNotEmpty) ||
+      temperatura != null ||
+      glicemia != null ||
+      saturacao != null;
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'origemAfericao': 'AUTO_RELATO_DOMICILIAR',
+    };
+    if (pressaoArterial != null && pressaoArterial!.isNotEmpty) {
+      data['pressaoArterial'] = pressaoArterial;
+    }
+    if (temperatura != null) {
+      data['temperatura'] = temperatura;
+    }
+    if (glicemia != null) {
+      data['glicemia'] = glicemia;
+    }
+    if (saturacao != null) {
+      data['saturacao'] = saturacao;
+    }
+    return data;
+  }
+}
+
 class DocumentoAnexoModel {
+
   final int id;
   final int itemChecklistId;
   final String nomeArquivoOriginal;

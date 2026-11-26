@@ -7,7 +7,8 @@ abstract class ISolicitacaoService {
     required int especialidadeId,
     required String queixaRelatada,
     required String tempoEvolucao,
-    required String telefoneContato,
+    String? telefoneContato,
+    SinaisVitaisDomiciliares? sinaisDomiciliares,
   });
   Future<DocumentoAnexoModel> uploadDocumento({
     required int solicitacaoId,
