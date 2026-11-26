@@ -8,6 +8,10 @@ class AuthResult {
   final String nome;
   final String email;
   final List<String> papeis;
+  final int? pacienteId;
+  final int? profissionalId;
+  final bool contatoValidado;
+  final String? telefone;
 
   const AuthResult({
     required this.token,
@@ -16,6 +20,10 @@ class AuthResult {
     required this.nome,
     required this.email,
     required this.papeis,
+    this.pacienteId,
+    this.profissionalId,
+    this.contatoValidado = false,
+    this.telefone,
   });
 
   factory AuthResult.fromJson(Map<String, dynamic> json) {
@@ -29,6 +37,10 @@ class AuthResult {
               ?.map((e) => e.toString())
               .toList() ??
           [],
+      pacienteId: json['pacienteId'],
+      profissionalId: json['profissionalId'],
+      contatoValidado: json['contatoValidado'] ?? false,
+      telefone: json['telefone'],
     );
   }
 }

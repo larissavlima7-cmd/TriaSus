@@ -7,6 +7,10 @@ abstract class IAuthService {
     String? senha,
   });
 
+  Future<void> validarContato({
+    required String telefone,
+  });
+
   Future<void> logout();
 
   Future<bool> isAuthenticated();

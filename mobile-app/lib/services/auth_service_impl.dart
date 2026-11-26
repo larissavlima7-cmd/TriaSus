@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../core/http_client.dart';
 import '../core/storage.dart';
@@ -16,17 +17,41 @@ class RealAuthService implements IAuthService {
     try {
       final response = await _dio.post(
         '/auth/cidadao',
-        data: {
-          'identificador': cpfOuCns,
-          'dataNascimento': dataNascimento,
-          'senha': senha,
-        },
+        data: {'identificador': cpfOuCns, 'dataNascimento': dataNascimento},
       );
       final result = AuthResult.fromJson(response.data);
       await AppStorage.saveToken(result.token);
+      await AppStorage.saveUserData(
+        jsonEncode({
+          'nome': result.nome,
+          'usuarioId': result.usuarioId,
+          'pacienteId': result.pacienteId,
+          'contatoValidado': result.contatoValidado,
+          'telefone': result.telefone,
+        }),
+      );
       return result;
-    } catch (e) {
-      throw AppHttpClient.parseErrorMessage(e);
+    } on DioException catch (dioErr) {
+      if (dioErr.response?.statusCode == 400 ||
+          dioErr.response?.statusCode == 401 ||
+          dioErr.response?.statusCode == 404) {
+        throw 'Dados não conferem. Verifique e tente de novo.';
+      }
+      throw AppHttpClient.parseErrorMessage(dioErr);
+    } catch (_) {
+      throw 'Dados não conferem. Verifique e tente de novo.';
+    }
+  }
+
+  @override
+  Future<void> validarContato({required String telefone}) async {
+    // TODO: Integrar com endpoint PATCH/POST de validação de contato do paciente quando disponível no backend
+    final userRaw = await AppStorage.getUserData();
+    if (userRaw != null) {
+      final Map<String, dynamic> data = jsonDecode(userRaw);
+      data['contatoValidado'] = true;
+      data['telefone'] = telefone;
+      await AppStorage.saveUserData(jsonEncode(data));
     }
   }
 
@@ -43,35 +68,75 @@ class RealAuthService implements IAuthService {
 }
 
 class MockAuthService implements IAuthService {
+  bool _mockContatoValidado = false;
+  String _mockTelefone = '19999990000';
+
   @override
   Future<AuthResult> loginCidadao({
     required String cpfOuCns,
     required String dataNascimento,
     String? senha,
   }) async {
-    // Simula atraso de rede
     await Future.delayed(const Duration(milliseconds: 600));
 
-    // Valida preenchimento básico
-    if (cpfOuCns.trim().isEmpty || dataNascimento.trim().isEmpty) {
-      throw 'Preencha o CPF ou Cartão SUS e a data de nascimento.';
+    final idLimpo = cpfOuCns.replaceAll(RegExp(r'\D'), '');
+    final dataLimpa = dataNascimento.trim();
+
+    // Aceita a cidadã do seed (Mariana Souza, CPF 39053344705, nascimento 1958-03-14)
+    // ou qualquer teste com identificador preenchido
+    final isSeedPatient =
+        (idLimpo == '39053344705' || idLimpo == '700000000000001');
+    final isSeedBirth =
+        (dataLimpa == '1958-03-14' || dataLimpa == '14/03/1958');
+
+    if (isSeedPatient && !isSeedBirth) {
+      throw 'Dados não conferem. Verifique e tente de novo.';
     }
 
-    const mockResult = AuthResult(
-      token: 'mock_jwt_token_cidadao_americana_12345',
+    final mockResult = AuthResult(
+      token: 'mock_jwt_token_cidadao_americana_39053344705',
       tipo: 'Bearer',
-      usuarioId: 1,
-      nome: 'Maria Silva Oliveira',
-      email: 'maria.silva@americana.sp.gov.br',
-      papeis: ['CIDADAO'],
+      usuarioId: 3,
+      nome: isSeedPatient ? 'Mariana Souza' : 'Maria Silva Oliveira',
+      email: isSeedPatient
+          ? 'mariana.souza@triasus.local'
+          : 'maria.silva@americana.sp.gov.br',
+      papeis: const ['CIDADAO'],
+      pacienteId: 1,
+      contatoValidado: _mockContatoValidado,
+      telefone: _mockTelefone,
     );
 
     await AppStorage.saveToken(mockResult.token);
+    await AppStorage.saveUserData(
+      jsonEncode({
+        'nome': mockResult.nome,
+        'usuarioId': mockResult.usuarioId,
+        'pacienteId': mockResult.pacienteId,
+        'contatoValidado': mockResult.contatoValidado,
+        'telefone': mockResult.telefone,
+      }),
+    );
     return mockResult;
   }
 
   @override
+  Future<void> validarContato({required String telefone}) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    _mockContatoValidado = true;
+    _mockTelefone = telefone;
+    final userRaw = await AppStorage.getUserData();
+    if (userRaw != null) {
+      final Map<String, dynamic> data = jsonDecode(userRaw);
+      data['contatoValidado'] = true;
+      data['telefone'] = telefone;
+      await AppStorage.saveUserData(jsonEncode(data));
+    }
+  }
+
+  @override
   Future<void> logout() async {
+    _mockContatoValidado = false;
     await AppStorage.clearAuth();
   }
 
