@@ -13,13 +13,16 @@ export class AuthService {
   private readonly userKey = 'tria_sus_user';
 
   login(credentials: { email: string; senha: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/profissional`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/profissional`, {
+      login: credentials.email.trim(),
+      senha: credentials.senha
+    }).pipe(
       tap(response => {
         const token = response.token ?? response.accessToken ?? response.jwt;
         if (!token) throw new Error('A resposta do servidor não contém um token JWT.');
         const user: AuthUser = response.usuario ?? response.user ?? {
           nome: response.nome ?? credentials.email,
-          perfil: response.perfil ?? 'PROFISSIONAL_SAUDE',
+          perfil: response.perfil ?? response.papeis?.[0] ?? 'PROFISSIONAL_SAUDE',
           unidadeUbs: response.unidadeUbs
         };
         localStorage.setItem(this.tokenKey, token);

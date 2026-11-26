@@ -16,6 +16,7 @@ export interface LoginResponse {
   user?: AuthUser;
   perfil?: string;
   nome?: string;
+  papeis?: string[];
   unidadeUbs?: string;
 }
 

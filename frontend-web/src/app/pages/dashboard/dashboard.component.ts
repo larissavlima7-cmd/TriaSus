@@ -1,12 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { DashboardData } from '../../core/models';
 
 @Component({
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [RouterLink],
   template: `
     <div class="page-heading">
       <div><span class="eyebrow">PAINEL DA UNIDADE</span><h1>Visão geral</h1><p>Acompanhe as solicitações e a organização dos encaminhamentos da UBS.</p></div>

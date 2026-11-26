@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { NgClass } from '@angular/common';
 import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'tria-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgClass],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
     @if (auth.isAuthenticated) {
       <div class="app-shell">
