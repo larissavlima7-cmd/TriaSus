@@ -1,0 +1,23 @@
+@"
+# Backend
+backend/target/
+uploads/
+*.log
+.env
+application-local.properties
+
+# Web
+frontend-web/node_modules/
+frontend-web/dist/
+frontend-web/.angular/
+
+# Mobile
+mobile-app/build/
+mobile-app/.dart_tool/
+
+# IDE / SO
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+"@ | Set-Content .gitignore
