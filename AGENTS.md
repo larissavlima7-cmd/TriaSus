@@ -50,3 +50,13 @@ Registra informações declaradas pelo cidadão e sinais vitais aferidos no acol
 - Em testes no terminal, usar `curl.exe` ou `Invoke-RestMethod`, nunca o alias `curl`.
 - Processos longos (`mvn spring-boot:run`, `ng serve`) devem rodar em segundo plano; confirmar pelo log e encerrar ao terminar.
 - Ao final de cada tarefa, listar arquivos criados ou alterados e como testar.
+
+## mobile-app
+- Stack: Flutter (Dart) com arquitetura em camadas e Provider para gerenciamento de estado.
+- Estrutura `lib/`: `core/` (tema, config, http, storage, escala de fonte), `models/`, `services/`, `screens/<tela>/` e `widgets/`.
+- Rede e serviços: isolar chamadas de API em `services/`; não colocar lógica de rede em widgets.
+- Configuração de rede: URL base em `lib/core/config.dart`; usar `10.0.2.2` para emulador Android em vez de `localhost`.
+- Autenticação e segurança: JWT exclusivamente em `flutter_secure_storage` (nunca em `shared_preferences`). Proibido logar token, CPF ou documentos.
+- Acessibilidade (RNF03): textos escaláveis por controle "A+ Fonte", suporte a alto contraste, alvos de toque >= 48dp, linguagem simples sem jargão clínico (o app não faz diagnóstico).
+- Comandos essenciais: `cd mobile-app; flutter pub get`, `flutter analyze` (deve passar sem erros) e `flutter run`.
+
