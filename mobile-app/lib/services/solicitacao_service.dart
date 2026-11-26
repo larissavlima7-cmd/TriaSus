@@ -20,5 +20,10 @@ abstract class ISolicitacaoService {
     required int solicitacaoId,
     required int documentoId,
   });
+  Future<void> reenviarDocumentoPendencia({
+    required int solicitacaoId,
+    required int itemChecklistId,
+    required String filePath,
+  });
   Future<void> submeterSolicitacao(int solicitacaoId);
 }
