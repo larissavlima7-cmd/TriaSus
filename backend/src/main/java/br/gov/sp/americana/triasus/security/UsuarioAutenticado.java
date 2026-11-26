@@ -9,16 +9,14 @@ import java.util.List;
 public class UsuarioAutenticado implements Authentication {
 
     private final Integer usuarioId;
-    private final String cpf;
     private final List<String> papeis;
     private final Integer pacienteId;
     private final Integer profissionalId;
     private final Collection<? extends GrantedAuthority> authorities;
     private boolean authenticated = true;
 
-    public UsuarioAutenticado(Integer usuarioId, String cpf, List<String> papeis, Integer pacienteId, Integer profissionalId, Collection<? extends GrantedAuthority> authorities) {
+    public UsuarioAutenticado(Integer usuarioId, List<String> papeis, Integer pacienteId, Integer profissionalId, Collection<? extends GrantedAuthority> authorities) {
         this.usuarioId = usuarioId;
-        this.cpf = cpf;
         this.papeis = papeis;
         this.pacienteId = pacienteId;
         this.profissionalId = profissionalId;
@@ -27,10 +25,6 @@ public class UsuarioAutenticado implements Authentication {
 
     public Integer getUsuarioId() {
         return usuarioId;
-    }
-
-    public String getCpf() {
-        return cpf;
     }
 
     public List<String> getPapeis() {

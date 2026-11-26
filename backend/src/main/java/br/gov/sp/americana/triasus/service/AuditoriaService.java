@@ -22,17 +22,22 @@ public class AuditoriaService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void registrarAcessoNegado(Integer usuarioId, String ipOrigem, String rota) {
+    public void registrarLog(Integer usuarioId, String acao, String entidade, String detalhes, String ipOrigem) {
         LogAuditoria auditoria = new LogAuditoria();
         if (usuarioId != null) {
             Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
             auditoria.setUsuario(usuario);
         }
-        auditoria.setAcao("ACESSO_NEGADO");
-        auditoria.setEntidadeAfetada("ROTA");
-        auditoria.setDetalhes("Acesso negado à rota: " + rota);
+        auditoria.setAcao(acao);
+        auditoria.setEntidadeAfetada(entidade);
+        auditoria.setDetalhes(detalhes);
         auditoria.setIpOrigem(ipOrigem);
         auditoria.setDataHora(LocalDateTime.now());
         logAuditoriaRepository.save(auditoria);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void registrarAcessoNegado(Integer usuarioId, String ipOrigem, String rota) {
+        registrarLog(usuarioId, "ACESSO_NEGADO", "ROTA", "Acesso negado à rota: " + rota, ipOrigem);
     }
 }

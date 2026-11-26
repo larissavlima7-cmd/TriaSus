@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 Claims claims = tokenService.validarToken(token);
                 Integer usuarioId = Integer.valueOf(claims.getSubject());
-                String cpf = claims.get("cpf", String.class);
                 Integer pacienteId = claims.get("pacienteId", Integer.class);
                 Integer profissionalId = claims.get("profissionalId", Integer.class);
 
@@ -49,7 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 UsuarioAutenticado authentication = new UsuarioAutenticado(
                         usuarioId,
-                        cpf,
                         papeis,
                         pacienteId,
                         profissionalId,

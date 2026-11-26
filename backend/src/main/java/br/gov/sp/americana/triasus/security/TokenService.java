@@ -34,10 +34,9 @@ public class TokenService {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String gerarToken(Integer usuarioId, String cpf, List<String> papeis, Integer pacienteId, Integer profissionalId, Instant expiracao) {
+    public String gerarToken(Integer usuarioId, List<String> papeis, Integer pacienteId, Integer profissionalId, Instant expiracao) {
         var builder = Jwts.builder()
                 .subject(String.valueOf(usuarioId))
-                .claim("cpf", cpf)
                 .claim("papeis", papeis)
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(expiracao))

@@ -96,7 +96,6 @@ public class AuthService {
         Instant expiracao = tokenService.calcularExpiracao();
         String token = tokenService.gerarToken(
                 usuario.getId(),
-                usuario.getCpf(),
                 papeis,
                 paciente.getId(),
                 profissionalId,
@@ -159,7 +158,6 @@ public class AuthService {
         Instant expiracao = tokenService.calcularExpiracao();
         String token = tokenService.gerarToken(
                 usuario.getId(),
-                usuario.getCpf(),
                 papeis,
                 pacienteId,
                 profissionalId,
