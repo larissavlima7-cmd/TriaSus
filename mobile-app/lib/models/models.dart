@@ -33,7 +33,8 @@ class AuthResult {
       usuarioId: json['usuarioId'] ?? 0,
       nome: json['nome'] ?? '',
       email: json['email'] ?? '',
-      papeis: (json['papeis'] as List<dynamic>?)
+      papeis:
+          (json['papeis'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -132,7 +133,8 @@ class SolicitacaoModel {
   final int unidadeId;
   final String? unidadeNome;
   final String dataSolicitacao;
-  final String status; // RASCUNHO, EM_CONFERENCIA_UBS, PENDENCIA_DOCUMENTAL, APTO_REGULACAO
+  final String
+  status; // RASCUNHO, EM_CONFERENCIA_UBS, PENDENCIA_DOCUMENTAL, APTO_REGULACAO
   final String prioridadeOficial; // NAO_DEFINIDA, BAIXA, MEDIA, ALTA, URGENTE
   final String queixaRelatada;
   final String tempoEvolucao;
@@ -171,8 +173,11 @@ class SolicitacaoModel {
       queixaRelatada: json['queixaRelatada'] ?? '',
       tempoEvolucao: json['tempoEvolucao'] ?? '',
       observacaoProfissional: json['observacaoProfissional'],
-      documentos: (json['documentos'] as List<dynamic>?)
-              ?.map((e) => DocumentoAnexoModel.fromJson(e as Map<String, dynamic>))
+      documentos:
+          (json['documentos'] as List<dynamic>?)
+              ?.map(
+                (e) => DocumentoAnexoModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           const [],
     );
@@ -183,13 +188,42 @@ class SolicitacaoModel {
       case 'RASCUNHO':
         return 'Rascunho';
       case 'EM_CONFERENCIA_UBS':
-        return 'Em Conferência na UBS';
+        return 'Em conferência na UBS';
       case 'PENDENCIA_DOCUMENTAL':
-        return 'Pendência Documental';
+        return 'Pendência de documento';
       case 'APTO_REGULACAO':
-        return 'Apto para Regulação';
+        return 'Apto para regulação';
       default:
         return status;
+    }
+  }
+
+  int get etapaAtualNumero {
+    switch (status) {
+      case 'RASCUNHO':
+        return 1;
+      case 'EM_CONFERENCIA_UBS':
+      case 'PENDENCIA_DOCUMENTAL':
+        return 2;
+      case 'APTO_REGULACAO':
+        return 3;
+      default:
+        return 1;
+    }
+  }
+
+  double get porcentagemProgresso {
+    switch (status) {
+      case 'RASCUNHO':
+        return 0.33;
+      case 'EM_CONFERENCIA_UBS':
+        return 0.65;
+      case 'PENDENCIA_DOCUMENTAL':
+        return 0.50;
+      case 'APTO_REGULACAO':
+        return 1.0;
+      default:
+        return 0.33;
     }
   }
 }
