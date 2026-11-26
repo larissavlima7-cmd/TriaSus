@@ -129,6 +129,7 @@ erDiagram
         int especialidade_id FK
         int unidade_id FK
         int profissional_conferencia_id FK
+        int criada_por_usuario_id FK
         timestamp data_solicitacao
         varchar status
         varchar prioridade_oficial
@@ -181,6 +182,7 @@ erDiagram
     USUARIO ||--o| PACIENTE : "eh (1:1)"
     USUARIO ||--o| PROFISSIONAL : "eh (1:1)"
     USUARIO ||--o{ LOG_AUDITORIA : "gera (1:N)"
+    USUARIO ||--o{ SOLICITACAO : "cria (1:N)"
     UNIDADE_UBS ||--o{ PACIENTE : "referencia (1:N)"
     UNIDADE_UBS ||--o{ PROFISSIONAL_UNIDADE : "aloca (1:N)"
     PROFISSIONAL ||--o{ PROFISSIONAL_UNIDADE : "atua (1:N)"
