@@ -17,7 +17,6 @@ class FontScaleNotifier extends ChangeNotifier {
     _currentScale = 1.0;
   }
 
-
   void setScale(double newScale) {
     if (availableScales.contains(newScale) && _currentScale != newScale) {
       _currentScale = newScale;
@@ -48,34 +47,39 @@ class FontScaleActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'Aumentar ou diminuir tamanho do texto',
-      icon: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.white.withAlpha(51),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Colors.white70),
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'A+',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+    return Semantics(
+      label: 'Controle de tamanho da fonte',
+      hint: 'Altera o tamanho do texto do aplicativo para melhorar a leitura',
+      button: true,
+      child: IconButton(
+        tooltip: 'Aumentar ou diminuir tamanho do texto',
+        icon: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(51),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white70),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'A+',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
-            ),
-            SizedBox(width: 4),
-            Icon(Icons.format_size, size: 18, color: Colors.white),
-          ],
+              SizedBox(width: 4),
+              Icon(Icons.format_size, size: 18, color: Colors.white),
+            ],
+          ),
         ),
+        onPressed: () {
+          _showScaleDialog(context);
+        },
       ),
-      onPressed: () {
-        _showScaleDialog(context);
-      },
     );
   }
 
