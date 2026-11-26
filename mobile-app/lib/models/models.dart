@@ -166,6 +166,29 @@ class DocumentoAnexoModel {
   }
 }
 
+class LinhaTempoEventoModel {
+  final String status;
+  final String titulo;
+  final String? descricao;
+  final String dataHora;
+
+  const LinhaTempoEventoModel({
+    required this.status,
+    required this.titulo,
+    this.descricao,
+    required this.dataHora,
+  });
+
+  factory LinhaTempoEventoModel.fromJson(Map<String, dynamic> json) {
+    return LinhaTempoEventoModel(
+      status: json['status'] ?? '',
+      titulo: json['titulo'] ?? json['status'] ?? '',
+      descricao: json['descricao'],
+      dataHora: json['dataHora'] ?? '',
+    );
+  }
+}
+
 class SolicitacaoModel {
   final int id;
   final String protocolo;
@@ -182,6 +205,9 @@ class SolicitacaoModel {
   final String tempoEvolucao;
   final String? observacaoProfissional;
   final List<DocumentoAnexoModel> documentos;
+  final List<LinhaTempoEventoModel> linhaDoTempo;
+  final String? telefoneUbs;
+  final String? enderecoUbs;
 
   const SolicitacaoModel({
     required this.id,
@@ -198,6 +224,9 @@ class SolicitacaoModel {
     required this.tempoEvolucao,
     this.observacaoProfissional,
     this.documentos = const [],
+    this.linhaDoTempo = const [],
+    this.telefoneUbs,
+    this.enderecoUbs,
   });
 
   factory SolicitacaoModel.fromJson(Map<String, dynamic> json) {
@@ -222,6 +251,14 @@ class SolicitacaoModel {
               )
               .toList() ??
           const [],
+      linhaDoTempo: (json['linhaDoTempo'] as List<dynamic>?)
+              ?.map(
+                (e) => LinhaTempoEventoModel.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          const [],
+      telefoneUbs: json['telefoneUbs'] ?? '(19) 3462-8000',
+      enderecoUbs: json['enderecoUbs'] ?? 'Americana - SP',
     );
   }
 

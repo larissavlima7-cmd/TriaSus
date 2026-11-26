@@ -584,8 +584,7 @@ class _InicioScreenState extends State<InicioScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Navega para aba de solicitações
-                        setState(() => _currentBottomIndex = 2);
+                        context.push('/solicitacoes');
                       },
                       child: const Text(
                         'Ver todas',
@@ -733,8 +732,7 @@ class _InicioScreenState extends State<InicioScreen> {
                   titulo: 'Histórico de encaminhamentos',
                   subtitulo: 'Consultas anteriores e protocolos',
                   onTap: () {
-                    // Alterna para aba de solicitações
-                    setState(() => _currentBottomIndex = 2);
+                    context.push('/solicitacoes');
                   },
                 ),
                 const SizedBox(height: 20),
@@ -749,6 +747,8 @@ class _InicioScreenState extends State<InicioScreen> {
           setState(() => _currentBottomIndex = index);
           if (index == 1) {
             context.push('/pre-triagem');
+          } else if (index == 2) {
+            context.push('/solicitacoes');
           } else if (index == 3) {
             _showPerfilDialog();
           }

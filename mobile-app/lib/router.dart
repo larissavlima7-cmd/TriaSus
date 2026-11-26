@@ -6,6 +6,7 @@ import 'screens/checklist/checklist_screen.dart';
 import 'screens/inicio/inicio_screen.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/pre_triagem/pre_triagem_screen.dart';
+import 'screens/solicitacoes/solicitacoes_screen.dart';
 
 /// Configuração central de rotas com GoRouter e guarda de autenticação
 final GoRouter appRouter = GoRouter(
@@ -56,6 +57,12 @@ final GoRouter appRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
         return AcompanhamentoScreen(solicitacaoId: id);
+      },
+    ),
+    GoRoute(
+      path: '/solicitacoes',
+      builder: (BuildContext context, GoRouterState state) {
+        return const SolicitacoesScreen();
       },
     ),
   ],
